@@ -1,0 +1,8 @@
+## Interface: 11305
+
+## Title: Hide XP Bar
+## Notes: Hides the experience bar.
+## Author: Frankisch
+## Version: 3.0
+## DefaultState: Enabled
+HideXPBar.lua
