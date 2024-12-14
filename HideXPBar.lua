@@ -35,9 +35,10 @@ end
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("ADDON_LOADED")
-eventFrame:RegisterEvent("UPDATE_EXHAUSTION") -- Fired when XP or rested state updates
-eventFrame:RegisterEvent("PLAYER_XP_UPDATE") -- Fired when gaining XP
-eventFrame:RegisterEvent("UPDATE_FACTION") -- Fired when gaining reputation
+eventFrame:RegisterEvent("UPDATE_EXHAUSTION")
+eventFrame:RegisterEvent("PLAYER_XP_UPDATE")
+eventFrame:RegisterEvent("UPDATE_FACTION")
+eventFrame:RegisterEvent("CVAR_UPDATE")
 
 eventFrame:SetScript("OnEvent", function(self, event, arg1)
     if event == "PLAYER_ENTERING_WORLD" or (event == "ADDON_LOADED" and arg1 == "HideXPBar") then
@@ -47,10 +48,18 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
         if event == "PLAYER_ENTERING_WORLD" then
             print("|cFFFFFF00[|cFF0070DEHide XP Bar|r|cFFFFFF00]|r |cFFFFFFFFType /hidexpbar to toggle the Experience Bar.|r")
         end
-    elseif event == "UPDATE_EXHAUSTION" or event == "PLAYER_XP_UPDATE" or event == "UPDATE_FACTION" then
+    elseif event == "UPDATE_EXHAUSTION" or event == "PLAYER_XP_UPDATE" or event == "UPDATE_FACTION" or event == "CVAR_UPDATE" then
+        -- Re-hide the XP bar when settings or updates occur
         if HideXPBarAddon.isHidden then
             HideXPBarAddon:HideXPBar()
         end
+    end
+end)
+
+-- Instant OnUpdate check (every frame)
+eventFrame:SetScript("OnUpdate", function(self, elapsed)
+    if HideXPBarAddon.isHidden and _G["MainMenuExpBar"] and _G["MainMenuExpBar"]:IsShown() then
+        HideXPBarAddon:HideXPBar()
     end
 end)
 
@@ -132,4 +141,3 @@ end)
 minimapButton:SetScript("OnLeave", function(self)
     GameTooltip:Hide()
 end)
-
